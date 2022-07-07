@@ -22,11 +22,10 @@
 		curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
 		curl_setopt($ch,CURLOPT_POSTFIELDS,$data);
 		$res = curl_exec($ch);
-		if(curl_error($ch)){
+		if(curl_error($ch))
 			var_dump(curl_error($ch));
-		}else{
+		else
 			return json_decode($res);
-		}
 	}
 
 	/**
@@ -48,14 +47,13 @@
 	$first_name = $message->chat->first_name;
 	$last_name = $message->chat->last_name;
 	$username = $message->chat->username;
-
+	$step = file_get_contents("step/$chat_id.txt");
 
 	typing($chat_id);
 
-	$step = file_get_contents("step/$chat_id.txt");
 
 	$user = $db->query("SELECT * FROM users WHERE  telegram_id = ?", $chat_id)->fetchArray();
-	if (empty($user)){
+	if (!empty($user)){
 		include "lang/".$user['lang']."/message.php";
 		echo $message['start'];
 	}else{

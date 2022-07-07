@@ -10,9 +10,8 @@ class DB
 
 	public function __construct($db_host = 'localhost', $db_user = 'root', $db_password = '', $db_name = '', $charset = 'utf8') {
 		$this->connection = new mysqli($db_host, $db_user, $db_password, $db_name);
-		if ($this->connection->connect_error) {
+		if ($this->connection->connect_error)
 			$this->error('Failed to connect to MySQL - ' . $this->connection->connect_error);
-		}
 		$this->connection->set_charset($charset);
 	}
 	/**
@@ -20,17 +19,17 @@ class DB
 	 * @param $query
 	 * @return $this
 	 */
-	public function query($query): DB
+    public function query($query): DB
 	{
-		if (!$this->query_closed) {
+		if (!$this->query_closed)
 			$this->query->close();
-		}
+
 		if ($this->query = $this->connection->prepare($query)) {
 			if (func_num_args() > 1) {
 				$x = func_get_args();
 				$args = array_slice($x, 1);
 				$types = '';
-				$args_ref = array();
+				$args_ref = [];
 				foreach ($args as $k => &$arg) {
 					if (is_array($args[$k])) {
 						foreach ($args[$k] as $j => &$a) {
@@ -43,12 +42,11 @@ class DB
 					}
 				}
 				array_unshift($args_ref, $types);
-				call_user_func_array(array($this->query, 'bind_param'), $args_ref);
+				call_user_func_array([$this->query, 'bind_param'], $args_ref);
 			}
 			$this->query->execute();
-			if ($this->query->errno) {
+			if ($this->query->errno)
 				$this->error('Unable to process MySQL query (check your params) - ' . $this->query->error);
-			}
 			$this->query_closed = FALSE;
 			$this->query_count++;
 		}

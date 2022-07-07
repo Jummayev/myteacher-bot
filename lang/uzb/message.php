@@ -1,4 +1,4 @@
 <?php
 	$message = [
-		"start" => "salom {gh: tyr}"
+		"start" => "Hello"
 	];
