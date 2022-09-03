@@ -51,15 +51,19 @@
 
 	typing($chat_id);
 
-
 	$user = $db->query("SELECT * FROM users WHERE  telegram_id = ?", $chat_id)->fetchArray();
-	if (!empty($user)){
+	if (!empty($user) and $user['is_connected'] != 0){
 		include "lang/".$user['lang']."/message.php";
-		echo $message['start'];
+		send("sendMessage", [
+			"chat_id" => $chat_id,
+			'parse_mode'=>"html",
+			"text" => "salom salom",
+		]);
 	}else{
 		$db->query("INSERT INTO users (telegram_id, first_name, last_name, username) VALUES(?, ?, ?, ?)", $chat_id, $first_name ?? "", $last_name ?? "", $username ?? "");
 		switch ($text){
 			case "/start" :
+				file_put_contents("step/$chat_id.txt", "start");
 				send("sendMessage", [
 					"chat_id" => $chat_id,
 					'parse_mode'=>"html",
